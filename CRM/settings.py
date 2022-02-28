@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+TAILWIND_APP_NAME = 'leads'
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -41,6 +43,8 @@ INSTALLED_APPS = [
     "leads",
 
     'rest_framework',
+    'tailwind',
+    'django_browser_reload'
 ]
 
 MIDDLEWARE = [
@@ -51,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = "CRM.urls"
