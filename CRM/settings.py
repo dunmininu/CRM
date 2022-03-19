@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     "agents",
 
     'rest_framework',
-    # 'tailwind',
-    'django_browser_reload'
+    'django_browser_reload',
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -145,3 +145,8 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 LOGIN_REDIRECT_URL = "/leads"
 LOGOUT_REDIRECT_URL = "/login"
 LOGIN_URL = "/login"
+
+GRAPH_MODELS = {
+    "all_applications": True,
+    "group_models": True,
+}

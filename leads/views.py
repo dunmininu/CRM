@@ -1,6 +1,3 @@
-from django.shortcuts import redirect, render
-from django.http import HttpResponse
-# from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
 from django.views.generic import (
     TemplateView,
