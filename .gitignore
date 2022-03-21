@@ -19,7 +19,9 @@ Temporary Items
 .apdisk
 ### Python ###
 # Byte-compiled / optimized / DLL files
-__pycache__/
+CRM/__pycache__/
+leads/__pycache__/
+leads/migrations/
 *.py[cod]
 # C extensions
 *.so
