@@ -35,15 +35,15 @@ class LeadListView(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
         user = self.request.user
+        # initial queryset of leads for the entire organisation
         if user.is_organiser:
             queryset = Lead.objects.filter(organisation=user.userprofile)
         else:
-
-        queryset = queryset.filter(agent__user=user)
-        return queryset
-        
-
-    
+            queryset = Lead.objects.filter(organisation=user.agent.organisation)
+            #filter for logged in agent
+            queryset = queryset.filter(agent__user=user)
+             
+        return queryset 
 
 class LeadDetailView(LoginRequiredMixin, DetailView):
     template_name = 'leads/lead_detail.html'
@@ -70,15 +70,23 @@ class LeadCreateView(OrganiserAndLoginRequiredMixin, CreateView):
 
 class LeadUpdateView(OrganiserAndLoginRequiredMixin, UpdateView):
     template_name = 'leads/lead_update.html'
-    queryset = Lead.objects.all()
     form_class = LeadModelForm
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        return Lead.objects.filter(organisation=user.userprofile)
 
     def get_success_url(self):
         return reverse('leads:lead-list')
 
 class LeadDeleteView(OrganiserAndLoginRequiredMixin, DeleteView):
     template_name = 'leads/lead_delete.html'
-    queryset = Lead.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        return Lead.objects.filter(organisation=user.userprofile)
 
     def get_success_url(self):
         return reverse('leads:lead-list')
