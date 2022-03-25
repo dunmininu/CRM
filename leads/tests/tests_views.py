@@ -10,4 +10,9 @@ class LandingPageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "landing.html")
 
+class LoginViewTest(TestCase):
+    def test_login(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/login.html")
         
