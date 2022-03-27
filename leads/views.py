@@ -43,7 +43,17 @@ class LeadListView(LoginRequiredMixin, ListView):
             #filter for logged in agent
             queryset = queryset.filter(agent__user=user)
              
-        return queryset 
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context= super(LeadListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.is_organiser:
+            queryset = Lead.objects.filter(organisation=user.userprofile)
+            context.update({
+                "unassigned_leads": 
+            })
+        return context
 
 class LeadDetailView(LoginRequiredMixin, DetailView):
     template_name = 'leads/lead_detail.html'
