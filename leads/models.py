@@ -40,7 +40,7 @@ class Agent(models.Model):
     )
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
 
 def post_user_created_signal(sender, instance, created, **kwargs):
     if created:
