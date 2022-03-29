@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 from django.contrib.auth import get_user_model
 
-from leads.models import Lead
+from leads.models import Lead, Agent
 
 User = get_user_model()
 
@@ -29,3 +29,17 @@ class CustomeUserCreationForm(UserCreationForm):
         model = User
         fields = ('username',)
         field_classes = {"username": UsernameField}
+
+class AssignAgentForm(forms.Form):
+    agent = forms.ModelChoiceField(queryset=Agent.objects.none())
+
+    #Pop out the request because django form 
+    # isn't expecting it: all args coming from request e.g the user
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop("request")
+        agents = Agent.objects.filter(organisation=request.user.userprofile)
+
+        #for every time the form is rendered, 
+        # this is to dynamically update the field based on the user logged in
+        super(AssignAgentForm, self).__init__(*args, **kwargs)
+        self.fields["agent"].queryset = agents
