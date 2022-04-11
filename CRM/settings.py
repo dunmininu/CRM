@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-TAILWIND_APP_NAME = 'leads'
+TAILWIND_APP_NAME = "leads"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -39,13 +39,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    # local apps
     "leads",
     "agents",
-
-    'rest_framework',
-    'django_browser_reload',
+    # thrid party apps
+    "rest_framework",
+    "django_browser_reload",
     "django_extensions",
+    "crispy_forms",
+    "crispy_tailwind",
 ]
 
 MIDDLEWARE = [
@@ -128,8 +130,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = 'static_root'
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = "static_root"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -150,3 +152,6 @@ GRAPH_MODELS = {
     "all_applications": True,
     "group_models": True,
 }
+
+CRISPY_TEMPLATE_PACK = "tailwind"
+CRISPY_ALLOWED_TEMPLATE_PACK = "tailwind"

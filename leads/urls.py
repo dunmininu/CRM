@@ -8,7 +8,8 @@ from .views import (
     LeadListView, 
     LeadDetailView,
     AssignAgentView,
-    CategoryListView
+    CategoryListView,
+    LeadCategoryUpdateView,
 )
 
 
@@ -23,4 +24,5 @@ urlpatterns = [
     path("<int:pk>/delete/", LeadDeleteView.as_view(), name="lead-delete"),
     path("categories/", CategoryListView.as_view(), name="category-list"),
     path("categories/<int:pk>/", CategoryDetailView.as_view(), name="category-detail"),
+    path("<int:pk>/category/", LeadCategoryUpdateView.as_view(), name="lead-category-update"),   
 ]

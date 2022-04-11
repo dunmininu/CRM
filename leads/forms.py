@@ -7,7 +7,6 @@ from leads.models import Lead, Agent
 User = get_user_model()
 
 class LeadModelForm(forms.ModelForm):
-    # loggedIn_organisation = forms.formsets
     class Meta:
         model = Lead
         fields = (
@@ -16,7 +15,6 @@ class LeadModelForm(forms.ModelForm):
             "age",
             'notes',
             "agent",
-            # "loggedIn_organisation"
         )
 
 
@@ -45,3 +43,11 @@ class AssignAgentForm(forms.Form):
         # this is to dynamically update the field based on the user logged in
         super(AssignAgentForm, self).__init__(*args, **kwargs)
         self.fields["agent"].queryset = agents
+
+
+class LeadCategoryUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Lead
+        fields = (
+            "category",
+        )

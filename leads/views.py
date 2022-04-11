@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 # from serializers import LeadCreateSerializer
 
 from .models import Agent, Category, Lead, User
-from .forms import AssignAgentForm, LeadModelForm, CustomeUserCreationForm
+from .forms import AssignAgentForm, LeadCategoryUpdateForm, LeadModelForm, CustomeUserCreationForm
 from agents.mixins import OrganiserAndLoginRequiredMixin
 
 
@@ -67,8 +67,22 @@ class LeadListView(LoginRequiredMixin, ListView):
 
 class LeadDetailView(LoginRequiredMixin, DetailView):
     template_name = 'leads/lead_detail.html'
-    queryset = Lead.objects.all()
     context_object_name = "lead"
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        if user.is_organiser:
+            queryset = Lead.objects.filter(
+                organisation=user.userprofile,
+            )
+        else:
+            queryset = Lead.objects.filter(
+                organisation=user.agent.organisation,
+            )
+            queryset = queryset.filter(agent__user=user)
+             
+        return queryset
 
 class LeadCreateView(OrganiserAndLoginRequiredMixin, CreateView):
     template_name = 'leads/lead_create.html'
@@ -174,13 +188,14 @@ class CategoryDetailView(LoginRequiredMixin, DetailView):
     template_name = "leads/category_detail.html"
     context_object_name = "category"
 
+    #get queryset of leadds that are assigned to this category
     def get_context_data(self, **kwargs):
         context = super(CategoryDetailView, self).get_context_data(**kwargs)
 
         leads = self.get_object().leads.all()
 
         context.update({
-            "unassigned_lead_count": None
+            "leads": leads
         })
 
         return context
@@ -198,3 +213,26 @@ class CategoryDetailView(LoginRequiredMixin, DetailView):
             )
              
         return queryset
+
+
+class LeadCategoryUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'leads/lead_category_update.html'
+    form_class = LeadCategoryUpdateForm
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        if user.is_organiser:
+            queryset = Lead.objects.filter(
+                organisation=user.userprofile,
+            )
+        else:
+            queryset = Lead.objects.filter(
+                organisation=user.agent.organisation,
+            )
+            queryset = queryset.filter(agent__user=user)
+             
+        return queryset
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse('leads:lead-detail', kwargs={'pk':self.get_object().id})
