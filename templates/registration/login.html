@@ -4,6 +4,12 @@
 {% block content %}
 
 <div class="max-w-lg mx-auto">
+    <div class="py-5 border-b border-gray-300 mb-5">
+        <a class="hover:text-blue-500" href="{% url 'signup' %}">
+            Don't have an account? Sign up
+        </a>
+    </div>
+
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
