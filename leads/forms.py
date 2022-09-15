@@ -2,9 +2,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 from django.contrib.auth import get_user_model
 
-from leads.models import Lead, Agent
+from leads.models import Category, Lead, Agent
 
 User = get_user_model()
+
 
 class LeadModelForm(forms.ModelForm):
     class Meta:
@@ -13,8 +14,10 @@ class LeadModelForm(forms.ModelForm):
             "first_name",
             "last_name",
             "age",
-            'notes',
+            "phone_number",
+            "email",
             "agent",
+            "description",
         )
 
 
@@ -24,22 +27,23 @@ class LeadForm(forms.Form):
     age = forms.IntegerField(min_value=0)
 
 
-class CustomeUserCreationForm(UserCreationForm):
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ("username",)
         field_classes = {"username": UsernameField}
+
 
 class AssignAgentForm(forms.Form):
     agent = forms.ModelChoiceField(queryset=Agent.objects.none())
 
-    #Pop out the request because django form 
+    # Pop out the request because django form
     # isn't expecting it: all args coming from request e.g the user
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request")
         agents = Agent.objects.filter(organisation=request.user.userprofile)
 
-        #for every time the form is rendered, 
+        # for every time the form is rendered,
         # this is to dynamically update the field based on the user logged in
         super(AssignAgentForm, self).__init__(*args, **kwargs)
         self.fields["agent"].queryset = agents
@@ -48,6 +52,10 @@ class AssignAgentForm(forms.Form):
 class LeadCategoryUpdateForm(forms.ModelForm):
     class Meta:
         model = Lead
-        fields = (
-            "category",
-        )
+        fields = ("category",)
+
+
+class CategoryCreationForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ("name", "organisation")

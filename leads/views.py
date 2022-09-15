@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.urls import reverse
 from django.views.generic import (
     TemplateView,
@@ -16,9 +17,10 @@ from django.core.mail import send_mail
 from .models import Agent, Category, Lead, User
 from .forms import (
     AssignAgentForm,
+    CategoryCreationForm,
     LeadCategoryUpdateForm,
     LeadModelForm,
-    CustomeUserCreationForm,
+    CustomUserCreationForm,
 )
 from agents.mixins import OrganiserAndLoginRequiredMixin
 
@@ -28,7 +30,7 @@ from agents.mixins import OrganiserAndLoginRequiredMixin
 
 class SignUpView(CreateView):
     template_name = "registration/signup.html"
-    form_class = CustomeUserCreationForm
+    form_class = CustomUserCreationForm
 
     def get_success_url(self):
         return reverse("login")
@@ -71,7 +73,7 @@ class LeadListView(LoginRequiredMixin, ListView):
         return context
 
 
-class LeadDetailView(LoginRequiredMixin, DetailView):
+class LeadDetailView(OrganiserAndLoginRequiredMixin, DetailView):
     template_name = "leads/lead_detail.html"
     context_object_name = "lead"
 
@@ -99,12 +101,14 @@ class LeadCreateView(OrganiserAndLoginRequiredMixin, CreateView):
         return reverse("leads:lead-list")
 
     def form_valid(self, form):
-        # TODO: send email
+        lead = form.save(commit=False)
+        lead.organisation = self.request.user.userprofile
+        lead.save()
         send_mail(
             subject="a lead has been created",
             message="click to get link and send",
             from_email="djangomailtestmaster@gmail.com",
-            recipient_list=["princekyle67@gmail.com"],
+            recipient_list=[lead.email],
         )
         return super(LeadCreateView, self).form_valid(form)
 
@@ -155,13 +159,26 @@ class AssignAgentView(OrganiserAndLoginRequiredMixin, FormView):
         return super(AssignAgentView, self).form_valid(form)
 
 
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    template_name = "leads/category-create.html"
+    form_class = CategoryCreationForm
+
+    def get_success_url(self):
+        return reverse("category: category-create")
+
+    def form_valid(self, form):
+        return super(CategoryCreateView, self).form_valid(form)
+
+
 class CategoryListView(LoginRequiredMixin, ListView):
     template_name = "leads/category_list.html"
     context_object_name = "category_list"
 
     def get_context_data(self, **kwargs):
         context = super(CategoryListView, self).get_context_data(**kwargs)
+        # category = self.get_object()
         user = self.request.user
+        # initial queryset of leads for the entire organisation
         if user.is_organiser:
             queryset = Lead.objects.filter(
                 organisation=user.userprofile,
@@ -170,8 +187,9 @@ class CategoryListView(LoginRequiredMixin, ListView):
             queryset = Lead.objects.filter(
                 organisation=user.agent.organisation,
             )
+        # queryset = Lead.objects.filter(category=category)
         context.update(
-            {"unassigned_lead_count": queryset.filter(category__isnull=True).count()}
+            {"unassigned_lead_count": queryset.filter(category__isnull=True).count()},
         )
 
         return context
