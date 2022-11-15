@@ -1,0 +1,13 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.formatting.provider": "black",
+        "githubPullRequests.ignoredPullRequestBranches": [
+            "develop"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+databases:
+  - name: crm
+    databaseName: crm
+    user: oluwaseyi
+
+services:
+  - type: web
+    name: crm
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn crm.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: crm
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
