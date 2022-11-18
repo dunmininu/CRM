@@ -71,7 +71,7 @@ MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
-ROOT_URLCONF = "CRM.urls"
+ROOT_URLCONF = "crm.urls"
 
 TEMPLATES = [
     {
@@ -89,18 +89,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "CRM.wsgi.application"
+WSGI_APPLICATION = "crm.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 # DATABASES = {
 #     "default": {
@@ -112,6 +112,16 @@ DATABASES = {
 #         "PORT": "",
 #     }
 # }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "crm_8lru",
+        "USER": "oluwaseyi",
+        "PASSWORD": "mObxIVibqhqIvPi4CFLL7E8fdnkZHOlc",
+        "HOST": "dpg-cdrn90h4rebbgsgtua2g-a",
+        "PORT": "",
+    }
+}
 
 
 # Password validation
