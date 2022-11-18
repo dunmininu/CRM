@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +30,7 @@ SECRET_KEY = config(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "RENDER" not in os.environ
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://bonjoursanusicrm.onrender.com"]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
@@ -104,10 +103,14 @@ WSGI_APPLICATION = "CRM.wsgi.application"
 # }
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default="postgresql://postgres:postgres@localhost:5432/mysite",
-        conn_max_age=600,
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "crm",
+        "USER": "oluwaseyi",
+        "PASSWORD": "Postgresql&8760",
+        "HOST": "localhost",
+        "PORT": "",
+    }
 }
 
 
